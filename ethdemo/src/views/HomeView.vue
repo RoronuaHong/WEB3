@@ -12,6 +12,7 @@
 <script setup>
 import { ref } from "vue";
 import Web3 from "web3";
+const { Transaction } = require('ethereumjs-tx');
 import Web3Api from "../components/Web3Api.vue";
 
 const string = ref("hello Vue3");
@@ -25,6 +26,7 @@ console.log(web3);
 
 // 创建账户
 const account = web3.eth.accounts.create(["123"]);
+const privateKeys = ref('0x0001');
 
 console.log(11, account);
 
@@ -43,22 +45,112 @@ console.log(4, "num1: ", num1, web3.utils.toWei);
 console.log(5, "num2: ", num2);
 
 // eth转账
-const send = async() => {
-  // 创建转账参数
+// const send = async() => {
+//   // 1. 构建转账参数
+//   // 获取账户交易次数
+//   const nonce = await web3.eth.getTransactionCount(account.address);
+
+//   console.log(nonce);
+
+//   // 获取预计转账 gas费用
+//   const gasPrice = await web3.eth.getGasPrice();
+
+//   console.log('gasPrice: ', gasPrice);
+
+//   // 转账金额: 以 wei 作为单位
+//   const value = web3.utils.toWei('0.00', 'ether');
+//   console.log(value);
+
+//   // rawTx
+//   const rawTx = {
+//     from: account.address,
+//     to: '0x1234567890abcdef1234567890abcdef12345678',
+//     nonce,
+//     gasPrice: '0x0',
+//     value,
+//     data: "0x0000",
+//   }
+
+//   // 2. 生成 serilizationTx
+//   // 转换私钥
+//   const privateKey = Buffer(privateKeys.value.slice(2), 'hex');
+
+//   console.log('privateKey: ', privateKey);
+  
+//   // gas估算
+//   console.log(111, 'rawTx: ', rawTx);
+//   const gas = await web3.eth.estimateGas(rawTx);
+
+//   console.log('gas: ', gas);
+
+//   rawTx.gas = gas;
+
+//   // etherumjs-tx 实现私钥加密
+//   // 创建交易对象
+//   const tx = new Transaction(rawTx, { chain: 'mainnet' });
+
+//   // 输出交易信息
+//   console.log(tx);
+
+//   tx.sign(privateKey);
+
+//   const serilizationTx = tx.serialize();
+
+//   console.log('serilizationTx: ', serilizationTx);
+// }
+
+// // web3.eth.sendSignedTransaction();
+
+const send = async () => {
+  // 1. 构建转账参数
   // 获取账户交易次数
   const nonce = await web3.eth.getTransactionCount(account.address);
-
-  console.log(nonce);
+  console.log("nonce: ", nonce);
 
   // 获取预计转账 gas费用
   const gasPrice = await web3.eth.getGasPrice();
-
   console.log('gasPrice: ', gasPrice);
 
   // 转账金额: 以 wei 作为单位
-  const value = web3.utils.toWei('0.01');
+  const value = web3.utils.toWei('0.00', 'ether');
+  console.log("value: ", value);
+
+  // rawTx
+  const rawTx = {
+    from: account.address,
+    to: '0x1234567890abcdef1234567890abcdef12345678',
+    nonce: web3.utils.toHex(nonce),  // Convert nonce to hex
+    gasPrice: web3.utils.toHex(gasPrice),  // Convert gasPrice to hex
+    value: '0x0',  // Convert value to hex
+    data: "0x0000",
+  };
+
+  // 2. 生成 serilizationTx
+  // 转换私钥
+  const privateKeyBuffer = Buffer.from(privateKeys.value.slice(2), 'hex');
+  console.log('privateKeyBuffer: ', privateKeyBuffer);
+
+  // gas估算
+  console.log(111, 'rawTx: ', rawTx);
+  const gas = await web3.eth.estimateGas(rawTx);
+  console.log('gas: ', gas);
+
+  rawTx.gas = web3.utils.toHex(gas);  // Convert gas to hex
+
+  // ethereumjs-tx 实现私钥加密
+  // 创建交易对象
+  const tx = new Transaction(rawTx, { chain: 'mainnet' });
+
+  // 输出交易信息
+  console.log(tx);
+
+  // 签名交易
+  tx.sign(privateKeyBuffer);
+
+  // 序列化交易
+  const serializedTx = tx.serialize();
+  console.log('serializedTx: ', serializedTx);
 }
 
-// web3.eth.sendSignedTransaction();
 
 </script>
