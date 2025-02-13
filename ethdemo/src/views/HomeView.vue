@@ -7,6 +7,7 @@
     <h1>转账: </h1>
     <van-divider/>
     <van-button type="primary" @click="send">获取费用</van-button>
+    <AccountSys></AccountSys>
   </div>
 </template>
 <script setup>
@@ -14,6 +15,7 @@ import { ref } from "vue";
 import Web3 from "web3";
 const { Transaction } = require('ethereumjs-tx');
 import Web3Api from "../components/Web3Api.vue";
+import AccountSys from '../components/AccountSys.vue';
 
 const string = ref("hello Vue3");
 
