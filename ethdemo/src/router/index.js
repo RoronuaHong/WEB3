@@ -29,6 +29,12 @@ const routes = [
     component: () => 
       import(/* webpackChunkName: "about" */ "../views/DemoView.vue"),
   },
+  {
+    path: "/web3wallet",
+    name: "web3wallet",
+    component: () => 
+      import(/* webpackChunkName: "about" */ "../views/Web3WalletView.vue"),
+  },
 ];
 
 const router = createRouter({

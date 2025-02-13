@@ -23,7 +23,7 @@ const mnemonic = 'involve feed mixture uniform assume owner lion lion divorce im
 
 // 根据助记词生成密钥对
 // 1. 导入分层恰饱模块
-import { hdkey } from 'ethereumjs-wallet';
+import ethwallet, { hdkey } from 'ethereumjs-wallet';
 import Web3 from 'web3';
 
 // 2. 将助记词转成seed【生成密钥对keypair】
@@ -35,7 +35,7 @@ const generateMnemonicFn = async () => {
   // 3. 获取钱包
   const hdWallet = hdkey.fromMasterSeed(seed);
 
-  // 4. 生成钱包中再/m44'/60'/0'/0 i路径的keypair
+  // 4. 生成钱包中在/m44'/60'/0'/0 i路径的keypair
   let keypair = hdWallet.derivePath("m/44'/60'/0'/0/0");
 
   console.log('hdWallet: ', hdWallet);
@@ -60,7 +60,8 @@ const generateMnemonicFn = async () => {
 
   // 4. 获取私钥
   // abf82ff96b463e9d82b83cb9bb450fe87e6166d4db6d7021d0c71d7e960d5abe
-  const priKey = '0x' + wallet.getPrivateKey().toString('hex');
+  const oldKey = wallet.getPrivateKey().toString('hex')
+  const priKey = '0x' + oldKey;
   console.log('私钥 - priKey: ', priKey);
 
   // 创建web3
@@ -78,7 +79,30 @@ const generateMnemonicFn = async () => {
   const keystore2 = await wallet.toV3('654321');
   console.log('keystore2: ', keystore2);
 
-  
+  // 3. 通过keystore 获取私钥
+  //  - 1. web3JS:
+  const res = await web3.eth.accounts.decrypt(keystore1, '123456');
+  const key1 = res.privateKey;
+  console.log('keystore-res: ', res);
+  console.log('key1: ', key1);
+
+  //  - 2. ethwallet:
+  const res2 = await ethwallet.fromV3(keystore2, '654321');
+  const key2 = res2.getPrivateKey().toString('hex');
+  console.log('keystore-res2: ', res2);
+  console.log('key2: ', key2);
+
+  // 通过私钥获取地址:
+  const priKey2 = Buffer(oldKey, 'hex');
+  console.log(1, 'priKey2: ', priKey2);
+
+  const wallet3 = ethwallet.fromPrivateKey(priKey2);
+  console.log(wallet3);
+  const lowerCaseAddress3 = wallet3.getAddressString();
+  console.log(2, 'lowerCaseAddress3: ', lowerCaseAddress3);
+
+  // 导入账户: 
+
 
   return seed;
 }
