@@ -14,6 +14,7 @@
     "ethereumjs-util": "^7.1.5",
     "ethereumjs-wallet": "^1.0.2",
     "register-service-worker": "^1.7.2",
+    "store2": "^2.14.4",
     "unplugin-vue-components": "^28.0.0",
     "vant": "^4.9.16",
     "vue": "^3.2.13",
