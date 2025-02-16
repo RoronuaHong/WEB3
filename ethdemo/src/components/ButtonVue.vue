@@ -67,18 +67,26 @@ const handleConfirm = async() => {
   const checkSumAddress = wallet.getChecksumAddressString()
   const privateKey = wallet.getPrivateKey().toString('hex')
   const keyStore = await wallet.toV3(pwd.value)
-  const walletInfo = [{
+  // const walletInfo = [{
+  //   id: addressIndex,
+  //   address: lowerCaseAddress,
+  //   privateKey,
+  //   keyStore,
+  //   mnemonic: mnemonic.value,
+  //   balance: 0,
+  // }]
+  walletInfos.push({
     id: addressIndex,
     address: lowerCaseAddress,
     privateKey,
     keyStore,
     mnemonic: mnemonic.value,
     balance: 0,
-  }]
+  })
 
-  store2('walletInfo', walletInfo)
+  store2('walletInfo', walletInfos)
 
-  console.log(3, 'walletInfo: ', walletInfo)
+  console.log(3, 'walletInfos: ', walletInfos)
 }
 
 const handleSave = () => {
