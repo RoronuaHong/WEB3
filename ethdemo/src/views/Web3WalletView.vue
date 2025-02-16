@@ -8,12 +8,11 @@
 
 <script setup>
 import ButtonVue from '@/components/ButtonVue.vue'
-import AccountList from '@/components/AccountList.vue'
 
 import store2 from 'store2'
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, provide } from 'vue';
 
-const walletInfo = ref(null)
+const walletInfo = ref([])
 
 onMounted(() => {
   walletInfo.value = store2.get('walletInfo') || []
